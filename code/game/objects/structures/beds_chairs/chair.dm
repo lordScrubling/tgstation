@@ -22,7 +22,7 @@
 	if(!has_buckled_mobs() && can_buckle)
 		. += span_notice("While standing on [src], drag and drop your sprite onto [src] to buckle to it.")
 
-/obj/structure/chair/Initialize()
+/obj/structure/chair/Initialize(mapload)
 	. = ..()
 	if(!anchored) //why would you put these on the shuttle?
 		addtimer(CALLBACK(src, .proc/RemoveFromLatejoin), 0)
@@ -142,7 +142,7 @@
 
 ///Material chair
 /obj/structure/chair/greyscale
-	material_flags = MATERIAL_ADD_PREFIX | MATERIAL_COLOR | MATERIAL_AFFECT_STATISTICS
+	material_flags = MATERIAL_EFFECTS | MATERIAL_ADD_PREFIX | MATERIAL_COLOR | MATERIAL_AFFECT_STATISTICS
 	item_chair = /obj/item/chair/greyscale
 	buildstacktype = null //Custom mats handle this
 
@@ -175,7 +175,7 @@
 	item_chair = null
 	var/mutable_appearance/armrest
 
-/obj/structure/chair/comfy/Initialize()
+/obj/structure/chair/comfy/Initialize(mapload)
 	armrest = GetArmrest()
 	armrest.layer = ABOVE_MOB_LAYER
 	return ..()
@@ -230,6 +230,15 @@
 		overlays_from_child_procs = list(image('icons/obj/chairs.dmi', loc, "echair_over", pixel_x = -1))
 	. = ..()
 
+/obj/structure/chair/comfy/carp
+	name = "carpskin chair"
+	desc = "A luxurious chair, the many purple scales reflect the light in a most pleasing manner."
+	icon_state = "carp_chair"
+	buildstacktype = /obj/item/stack/sheet/animalhide/carp
+
+/obj/structure/chair/comfy/carp/GetArmrest()
+	return mutable_appearance('icons/obj/chairs.dmi', "carp_chair_armrest")
+
 /obj/structure/chair/office
 	anchored = FALSE
 	buildstackamount = 5
@@ -260,19 +269,7 @@
 	buildstackamount = 1
 	item_chair = /obj/item/chair/stool
 
-/obj/structure/chair/stool/directional/north
-	dir = SOUTH
-	pixel_y = 6
-
-/obj/structure/chair/stool/directional/south
-	dir = NORTH
-	pixel_y = 6
-
-/obj/structure/chair/stool/directional/east
-	dir = WEST
-
-/obj/structure/chair/stool/directional/west
-	dir = EAST
+MAPPING_DIRECTIONAL_HELPERS(/obj/structure/chair/stool, 0)
 
 /obj/structure/chair/stool/narsie_act()
 	return
@@ -300,17 +297,7 @@
 	icon_state = "bar"
 	item_chair = /obj/item/chair/stool/bar
 
-/obj/structure/chair/stool/bar/directional/north
-	dir = SOUTH
-
-/obj/structure/chair/stool/bar/directional/south
-	dir = NORTH
-
-/obj/structure/chair/stool/bar/directional/east
-	dir = WEST
-
-/obj/structure/chair/stool/bar/directional/west
-	dir = EAST
+MAPPING_DIRECTIONAL_HELPERS(/obj/structure/chair/stool/bar, 0)
 
 /obj/item/chair
 	name = "chair"
@@ -398,7 +385,7 @@
 		smash(user)
 
 /obj/item/chair/greyscale
-	material_flags = MATERIAL_ADD_PREFIX | MATERIAL_COLOR | MATERIAL_AFFECT_STATISTICS
+	material_flags = MATERIAL_EFFECTS | MATERIAL_ADD_PREFIX | MATERIAL_COLOR | MATERIAL_AFFECT_STATISTICS
 	origin_type = /obj/structure/chair/greyscale
 
 /obj/item/chair/stool

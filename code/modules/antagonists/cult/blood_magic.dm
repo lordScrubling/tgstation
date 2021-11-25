@@ -115,7 +115,7 @@
 	..()
 
 /datum/action/innate/cult/blood_spell/IsAvailable()
-	if(!IS_CULTIST(owner) || owner.incapacitated()  || !charges)
+	if(!IS_CULTIST(owner) || owner.incapacitated() || !charges)
 		return FALSE
 	return ..()
 
@@ -358,11 +358,12 @@
 	var/health_cost = 0 //The amount of health taken from the user when invoking the spell
 	var/datum/action/innate/cult/blood_spell/source
 
-/obj/item/melee/blood_magic/New(loc, spell)
-	source = spell
-	uses = source.charges
-	health_cost = source.health_cost
-	..()
+/obj/item/melee/blood_magic/Initialize(mapload, spell)
+	. = ..()
+	if(spell)
+		source = spell
+		uses = source.charges
+		health_cost = source.health_cost
 
 /obj/item/melee/blood_magic/Destroy()
 	if(!QDELETED(source))
@@ -376,7 +377,7 @@
 			source.desc = source.base_desc
 			source.desc += "<br><b><u>Has [uses] use\s remaining</u></b>."
 			source.UpdateButtonIcon()
-	..()
+	return ..()
 
 /obj/item/melee/blood_magic/attack_self(mob/living/user)
 	afterattack(user, user, TRUE)
@@ -611,6 +612,7 @@
 					if(QDELETED(candidate))
 						channeling = FALSE
 						return
+					candidate.grab_ghost()
 					user.visible_message(span_danger("The dark cloud recedes from what was formerly [candidate], revealing a\n [construct_class]!"))
 					make_new_construct_from_class(construct_class, THEME_CULT, candidate, user, FALSE, T)
 					uses--

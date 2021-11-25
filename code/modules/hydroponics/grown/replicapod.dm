@@ -56,7 +56,7 @@
 	var/contains_sample = FALSE
 	var/being_harvested = FALSE
 
-/obj/item/seeds/replicapod/Initialize()
+/obj/item/seeds/replicapod/Initialize(mapload)
 	. = ..()
 
 	create_reagents(volume, INJECTABLE|DRAWABLE)
@@ -171,7 +171,7 @@
 		if(prob(getYield() * 20))
 			seed_count++
 		var/output_loc = parent.Adjacent(user) ? user.loc : parent.loc //needed for TK
-		for(var/i=0,i<seed_count,i++)
+		for(var/i  in 1 to seed_count)
 			var/obj/item/seeds/replicapod/harvestseeds = src.Copy()
 			result.Add(harvestseeds)
 			harvestseeds.forceMove(output_loc)
